@@ -11,11 +11,11 @@ app.use(express.static(__dirname));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false}));
 
-router.router(app);
-
 io.on('connection', (socket) => {
     console.log('A new user connected')
 })
+
+router.router(app, io);
 
 var dbUrl = "mongodb+srv://user:user@tsltestcluster.nighjgc.mongodb.net/?retryWrites=true&w=majority";
 
