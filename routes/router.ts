@@ -1,13 +1,20 @@
-var controller = require('../controller')
+// var controller = require('../controller')
 const path = require('path');
+import Controller from './../controller'
 
-exports.router = (app, io) => {    
-        app.get('/', (req, res) => {
+export default class Router {
+
+    constructor(private app: any, private controller: Controller) {
+    }
+
+    public init() {
+        this.app.get('/', (req, res) => {
             res.sendFile(path.join(__dirname, '../index.html'));
         });
-        app.get('/messages', controller.getMessages);
+        this.app.get('/messages', this.controller.getMessages);
 
-        app.post('/messages', (req, res) => {
-            controller.saveMessage(req, res, io)
+        this.app.post('/messages', (req, res) => {
+            this.controller.saveMessage(req, res)
         });
     }
+}

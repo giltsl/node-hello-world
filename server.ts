@@ -1,11 +1,13 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http)
-var mongo = require('mongoose');
+
+import * as express from 'express';
+import * as bodyParser from 'body-parser';
+
+const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 import * as mongoose from 'mongoose';
-var router = require('./routes/router');
+import Router from './routes/router';
+import Controller from './controller';
 
 app.use(express.static(__dirname));
 app.use(bodyParser.json());
@@ -15,14 +17,16 @@ io.on('connection', (socket) => {
     console.log('A new user connected')
 })
 
-router.router(app, io);
+const controller = new Controller(io)
+const router = new Router(app, controller);
+router.init();
 
-var dbUrl = "mongodb+srv://user:user@tsltestcluster.nighjgc.mongodb.net/?retryWrites=true&w=majority";
+const dbUrl = "mongodb+srv://user:user@tsltestcluster.nighjgc.mongodb.net/?retryWrites=true&w=majority";
 
 mongoose.connect(dbUrl, (err) => {
     console.log('Mongo db connection', err);
 })
 
-var server = http.listen(3000, () => {
+const server = http.listen(3000, () => {
     console.log("My app listen on port", server.address().port);
 });
